@@ -194,3 +194,9 @@ module.exports = {
   }
 }
 
+jest.cong.js
+module.exports = {
+    preset: 'ts-jest',
+    testEnvironment: 'node',
+    testIgnorePatterns: ["/node_modules/", "src/tests/pageObjects/"],
+};
