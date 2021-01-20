@@ -9,6 +9,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "transform": {
+    "\\.js$": "<rootDir>/node_modules/babel-jest"
+  },
   "dependencies": {
     "@types/jest": "^26.0.15",
     "@types/selenium-webdriver": "^4.0.11",
