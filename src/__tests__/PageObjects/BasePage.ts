@@ -8,6 +8,7 @@ import {
   
 } from "selenium-webdriver"
 const chromedriver = require("chromedriver");
+const fs = require("fs");
 
 
 /** Optional parameters for the page object */
@@ -20,32 +21,37 @@ interface Options {
 
 export class BasePage {
      // Search bar
-     searchBar: By = By.id('#search-input')
+     searchBar: By = By.id('search-input')
      //email input
-     email: By = By.className('.ui-input')
+     email: By = By.css('input[autocomplete="email"]')
      //clicks the start shopping button
      startShopping: By = By.css('button[type="submit"]')
      //clicks the add password button
      addPassword: By = By.css('input[autocomplete="new-password"]')
      //clicks the set Password button
-     setPassword: By = By.id('#password')
+     setPassword: By = By.css('input[autocomplete="password"]')
+     //clicks the submit button
+     submit: By = By.css('button[type="submit"]')
      //shows the 50% off popUP
      popUp: By = By.xpath('//div[@class="u-flex u-flex-col u-bg-white u-rounded-4 u-m-auto u-relative _1ivBsHCOh3N7wt6s01Kjqj _1o5gMN69zQnHFzMZNJfAGX"]')
      //Seaches for a particular dress
-     Results: By = By.xpath('(//a[@class="WCdF1-WeVI0oEKb0AIa4c"])[1]')
+     Results: By = By.xpath('//a[text()= "Lovers + Friends Size Med"]')
      // shows add to cart
      addtoCart: By = By.xpath('(//button[text()="Add to Cart"])[1]')
      //views what is in the cart
      viewCart: By = By.xpath('//a[@class="ui-button ui-primary u-flex-1"]')
      
+     notrightNow: By = By.css('[class="ui-link u-uppercase u-tracking-wide"]')
      sleep(ms: number) {
        return new Promise( resolve => setTimeout(resolve, ms));
      }
      // Account page URL
-     accountURL: string = "https://www.thredup.com/";
+     
+     //accountURL: string = "https://www.thredup.com/";
    
   driver: WebDriver;
-  url: string;
+  url: string = "https://www.thredup.com/"
+  
   /**
    *
    * @param {Options} options - optional paramaters for the base page object.
@@ -83,14 +89,15 @@ export class BasePage {
    * @param {By} elementBy - the locator for the element to return.
    */
   async getElement(elementBy: By): Promise<WebElement> {
+      //await this.driver.sleep(5000)
       await this.driver.wait(until.elementLocated(elementBy));
       let element = await this.driver.findElement(elementBy);
       await this.driver.wait(until.elementIsVisible(element));
       return element;
   }
   async clickAndEnter(element:By, input:string) {
-    await this.getElement(element);
-    await this.click(element);
+    let myElement = await this.getElement(element);
+    await myElement.click()
     await this.setInput(element, input);
   }
   async login() {
@@ -127,7 +134,7 @@ async NavPage() {
      let element = await this.driver.findElement(this.popUp);
      await this.driver.wait(until.elementIsVisible(element));
     // Go to account page
-    await this.driver.get(this.accountURL);
+    await this.driver.get(this.url);
      // Wait until header logo on User's page is enabled.
      await this.driver.wait(
      until.elementIsEnabled(await this.getElement(this.popUp))
@@ -180,6 +187,17 @@ async addingitemtoCart() {
   async getAttribute(elementBy: By, attribute: string): Promise<string> {
       return (await this.getElement(elementBy)).getAttribute(attribute);
   }
+  async takeScreenshot(filepath: string) {
+    fs.writeFile(
+      `${__dirname}/screenshot/${filepath}.png`,
+      await this.driver.takeScreenshot(),
+      "base64",
+      (e) => {
+        if (e) console.log(e);
+        else console.log("screenshot saved successfully");
+      }
+    );
+  };
   
   async anotherClick(elementBy: By) {
       let myElement = await this.driver.wait(until.elementLocated(elementBy))
