@@ -1,1 +1,4 @@
-# ThredUp
+# ThredUp https://www.thredup.com/
+https://dmutah.atlassian.net/browse/ADDL-56
+
+In this project I tested the webstite ThredUP. ThredUp is an website that allows users to sell and buy used clothing online. It is basically an online thrift store. I created 3 automated test to test the ability to create an account, search for an article of clothing and also to add that item to the cart. I also created 2 page object. I ended up pulling all of my methods from the base page and not the ThredUP page. The ThredUp page object seemed redundant. The main problem was with the add to cart page. Most likely if someone were to run this test now, it would fail. Items on the website are one of a kind and if someone else put the item that I was using into their cart, my select would not be any good anymore and the test would fail. 
